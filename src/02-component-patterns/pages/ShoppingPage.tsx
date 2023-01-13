@@ -5,54 +5,42 @@ import {
   ProductButtons,
 } from "../components";
 import { products } from "../data/products";
-import useShoppingCart from "../hooks/useShoppingCart";
 
 import "../styles/custom-styles.css";
+const product = products[0];
 
 export default function ShoppingPage() {
-  const { shoppingCart, handleProductCountChange } = useShoppingCart();
-
   return (
     <div>
       <h1>Shopping page</h1>
       <hr />
-      <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
-        {products.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            value={shoppingCart[product.id]?.count || 0}
-            className="bg-dark text-white"
-            onChange={handleProductCountChange}
-          >
-            <ProductImage className="custom-image" />
+      <ProductCard
+        key={product.id}
+        product={product}
+        className="bg-dark text-white"
+        initialValues={{ count: 4, maxCount: 10 }}
+      >
+        {({ reset, isMaxCountReached, increaseBy, count, maxCount }) => (
+          <>
+            <ProductImage
+              className="custom-image"
+              style={{ boxShadow: "10px 10px 10px rgba(0,0,0,0.2" }}
+            />
             <ProductTitle className="text-bold" />
             <ProductButtons className="custom-buttons" />
-          </ProductCard>
-        ))}
-      </div>
-      <div className="shopping-cart">
-        {/* {Object.values(shoppingCart).map(({ count, ...product }) => ( */}
-        {Object.entries(shoppingCart).map(([key, product]) => (
-          <ProductCard
-            key={key}
-            product={product}
-            className="bg-dark text-white"
-            style={{ width: "100px" }}
-            value={product.count}
-            onChange={handleProductCountChange}
-          >
-            <ProductImage className="custom-image" />
-            <ProductButtons
-              className="custom-buttons"
-              style={{ display: "flex", justifyContent: "center" }}
-            />
-          </ProductCard>
-        ))}
-      </div>
-      <div>
-        <code>{JSON.stringify(shoppingCart, null, 5)}</code>
-      </div>
+            <button onClick={reset}>Reset</button>
+            {count >= 2 && <button onClick={() => increaseBy(-2)}>-2</button>}
+            {/*Si no se llega al isMaxCount,ocultar */}
+            {!isMaxCountReached && (
+              <button onClick={() => increaseBy(+2)}>+2</button>
+            )}
+            <span>
+              {count} - {maxCount}
+            </span>
+            {/* {JSON.stringify(args, null, 3)} */}
+          </>
+        )}
+      </ProductCard>
     </div>
   );
 }
