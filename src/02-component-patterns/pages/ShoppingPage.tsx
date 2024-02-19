@@ -21,7 +21,7 @@ export default function ShoppingPage() {
           <ProductCard
             key={product.id}
             product={product}
-            value={shoppingCart[product.id]?.count || 0}
+            value={shoppingCart.get(product.id)?.count || 0}
             className="bg-dark text-white"
             onChange={handleProductCountChange}
           >
@@ -32,10 +32,9 @@ export default function ShoppingPage() {
         ))}
       </div>
       <div className="shopping-cart">
-        {/* {Object.values(shoppingCart).map(({ count, ...product }) => ( */}
-        {Object.entries(shoppingCart).map(([key, product]) => (
+        {Array.from(shoppingCart.values()).map((product) => (
           <ProductCard
-            key={key}
+            key={product.id}
             product={product}
             className="bg-dark text-white"
             style={{ width: "100px" }}
@@ -49,9 +48,6 @@ export default function ShoppingPage() {
             />
           </ProductCard>
         ))}
-      </div>
-      <div>
-        <code>{JSON.stringify(shoppingCart, null, 5)}</code>
       </div>
     </div>
   );

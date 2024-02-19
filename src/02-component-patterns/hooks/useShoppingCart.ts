@@ -2,9 +2,7 @@ import { useState } from 'react'
 import { Product, ProductInCart } from '../interfaces/interfaces';
 
 function useShoppingCart() {
-  const [shoppingCart, setShoppingCart] = useState<{
-    [key: string]: ProductInCart;
-  }>({});
+  const [shoppingCart, setShoppingCart] = useState(new Map<string,ProductInCart>());
 
   const handleProductCountChange = ({
     count,
@@ -13,29 +11,19 @@ function useShoppingCart() {
     count: number;
     product: Product;
   }) => {
-    setShoppingCart((oldShoppingCart) => {
-      const productInCart: ProductInCart = oldShoppingCart[product.id] || {
-        ...product,
-        count: 0,
+    setShoppingCart((oldShoppingCart: Map<string, ProductInCart>) => {
+      const productInCart: ProductInCart = oldShoppingCart.get(product.id) || {
+          ...product,
+          count: 0,
       };
+      const newShoppingCart = new Map(oldShoppingCart);
       if (Math.max(productInCart.count + count, 0) > 0) {
         productInCart.count += count;
-        return {
-          ...oldShoppingCart,
-          [product.id]: productInCart,
-        };
+        newShoppingCart.set(product.id, productInCart);
+      }else{
+        newShoppingCart.delete(product.id)
       }
-      //borrar el producto
-      const { [product.id]: toDelete, ...rest } = oldShoppingCart;
-      return rest;
-      // if (count === 0) {
-      //   const { [product.id]: toDelete, ...rest } = oldShoppingCart;
-      //   return rest;
-      // }
-      // return {
-      //   ...oldShoppingCart,
-      //   [product.id]: { ...product, count },
-      // };
+      return newShoppingCart;
     });
   };
   return {

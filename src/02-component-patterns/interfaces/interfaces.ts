@@ -8,6 +8,10 @@ export interface Product {
   img?: string;
 }
 
+export interface ProductInCart extends Product {
+  count: number;
+}
+
 export interface ProductContextProps {
   counter: number;
   increaseBy: (value: number) => void;
@@ -27,6 +31,3 @@ export interface onChangeArgs {
 }
 
 
-export interface ProductInCart extends Product {
-  count: number;
-}
